@@ -1,0 +1,21 @@
+{
+  "name": "R@THR UN1Q — Blood Type Diet & AI Nutrition Coach",
+  "short_name": "R@THR UN1Q",
+  "description": "Discover what to eat for your blood type. Personalised food guides, daily meal plans, and an AI nutrition coach for all 8 blood types.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#004D40",
+  "theme_color": "#004D40",
+  "orientation": "portrait-primary",
+  "lang": "en-US",
+  "categories": ["health", "food", "lifestyle"],
+  "icons": [
+    {
+      "src": "icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
