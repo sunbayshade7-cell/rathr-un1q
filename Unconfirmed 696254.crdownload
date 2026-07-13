@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="description" content="Discover what to eat for your blood type. R@THR UN1Q gives you personalised food guides, daily meal plans, and an AI nutrition coach for all 8 blood types."/>
+<meta name="theme-color" content="#004D40"/>
+<meta name="mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+<meta name="apple-mobile-web-app-title" content="R@THR UN1Q"/>
+<link rel="manifest" href="manifest.json"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>R@THR UN1Q — Blood Type Diet &amp; AI Nutrition Coach</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:#005A4E;display:flex;justify-content:center;padding:20px;min-height:100vh;font-family:Georgia,serif;}
+.phone{width:390px;background:#F0FDF9;border-radius:40px;border:1.5px solid #B2DFDB;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 30px 80px rgba(0,0,0,0.6);}
+.screen{flex:1;overflow-y:auto;display:none;flex-direction:column;}
+.screen.active{display:flex;background:#F0FDF9;}
+.nav-bar{display:flex;border-top:0.5px solid #B2DFDB;background:#F0FDF9;flex-shrink:0;}
+.nav-btn{flex:1;padding:9px 4px 8px;display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;background:none;border:none;color:#8FB5AE;font-size:10px;font-weight:600;font-family:Georgia,serif;}
+.nav-btn.active{color:#00695C;}.nav-btn.active::after{content:"";width:5px;height:5px;border-radius:50%;background:#FFD600;margin-top:1px;}
+.top-bar{padding:16px 20px 6px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;background:#F0FDF9;}
+.logo{font-size:18px;font-weight:700;color:#222;}
+.logo span{color:#00897B;}
+.content{padding:0 18px 24px;display:flex;flex-direction:column;gap:13px;background:#F0FDF9;}
+.card{background:#FFFFFF;border:.5px solid #B2DFDB;border-radius:18px;padding:15px;}
+.card.silver{background:#E0F2F1;border-color:#B2DFDB;}
+.sec-title{font-size:11px;font-weight:500;color:#999;text-transform:uppercase;letter-spacing:.07em;margin-bottom:10px;}
+.type-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:9px;}
+.type-btn{background:#FFFFFF;border:.5px solid #B2DFDB;border-radius:13px;padding:11px 4px;cursor:pointer;text-align:center;}
+.type-btn.sel{border:2.5px solid #00897B;background:#fdf5f5;}
+.type-btn .tl{font-size:18px;font-weight:700;color:#333;}
+.type-btn.sel .tl{color:#00897B;}
+.type-btn .ts{font-size:9px;color:#999;margin-top:2px;}
+.abtn{width:100%;padding:15px;background:#FFD600;color:#1A2E2B;border:none;border-radius:15px;font-size:16px;font-weight:700;font-family:Georgia,serif;letter-spacing:1.5px;cursor:pointer;display:block;}
+.bbtn{width:100%;padding:13px;background:#E0F2F1;color:#00695C;border:1.5px solid #B2DFDB;border-radius:15px;font-size:14px;font-weight:700;font-family:Georgia,serif;cursor:pointer;display:block;margin-top:9px;}
+.irow{display:flex;align-items:center;gap:13px;margin-bottom:11px;}
+.bc{width:52px;height:52px;border-radius:50%;background:#E0F2F1;border:2px solid #00897B;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:700;color:#00897B;flex-shrink:0;}
+.itext h2{font-size:16px;font-weight:700;color:#222;margin-bottom:3px;}
+.itext p{font-size:11px;color:#888;line-height:1.45;}
+.srow{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-bottom:4px;}
+.st{background:#E0F2F1;border-radius:11px;padding:9px;text-align:center;}
+.stv{font-size:15px;font-weight:700;color:#00897B;}
+.stl{font-size:10px;color:#999;margin-top:2px;}
+.f2{display:grid;grid-template-columns:1fr 1fr;gap:9px;}
+.fc h3{font-size:11px;font-weight:600;margin-bottom:7px;}
+.fc.eat h3{color:#27ae60;}
+.fc.avoid h3{color:#00897B;}
+.ft{display:inline-block;font-size:11px;padding:3px 8px;border-radius:20px;margin:2px 2px 2px 0;}
+.ft.e{background:#eaf6f0;color:#1e8449;border:.5px solid #a9dfbf;}
+.ft.a{background:#f0e8e8;color:#00897B;border:.5px solid #ddb8b8;}
+.ft.w{background:#FFF8E1;color:#9a7000;border:.5px solid #d4c07a;}
+.mr{display:flex;gap:11px;padding:9px 0;border-bottom:.5px solid #eee;}
+.mr:last-child{border-bottom:none;padding-bottom:0;}
+.mt{font-size:10px;font-weight:500;color:#bbb;min-width:55px;padding-top:2px;}
+.mn{font-size:13px;font-weight:600;color:#333;}
+.md{font-size:11px;color:#aaa;margin-top:2px;}
+.pills{display:flex;flex-wrap:wrap;gap:5px;}
+.pill{font-size:11px;padding:4px 10px;border-radius:20px;}
+.pill.s{background:#e8eef5;color:#1a5fa8;border:.5px solid #b0c8e8;}
+.pill.w{background:#FFF8E1;color:#9a7000;border:.5px solid #d4c07a;}
+.msgs{flex:1;overflow-y:auto;padding:0 18px;display:flex;flex-direction:column;gap:11px;min-height:200px;background:#F0FDF9;}
+.msg{display:flex;gap:8px;align-items:flex-start;}
+.msg.u{flex-direction:row-reverse;}
+.av{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;flex-shrink:0;}
+.msg.ai .av{background:#E0F2F1;color:#00897B;border:.5px solid #B2DFDB;}
+.msg.u .av{background:#00897B;color:#fff;}
+.bb{max-width:82%;padding:9px 13px;border-radius:16px;font-size:12px;line-height:1.6;}
+.msg.ai .bb{background:#FFFFFF;color:#444;border:.5px solid #B2DFDB;border-radius:4px 16px 16px 16px;}
+.msg.u .bb{background:#00897B;color:#fff;border-radius:16px 4px 16px 16px;}
+.inp-row{display:flex;gap:9px;padding:11px 18px;border-top:1px solid #B2DFDB;flex-shrink:0;background:#F0FDF9;}
+.inp-row input{flex:1;font-size:13px;padding:10px 14px;border-radius:22px;border:.5px solid #B2DFDB;background:#FFFFFF;color:#333;outline:none;font-family:Georgia,serif;}
+.inp-row input:focus{border-color:#00897B;}
+.sb{background:#00897B;color:#fff;border:none;border-radius:50%;width:38px;height:38px;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;font-size:18px;}
+.qrow{display:flex;gap:6px;padding:9px 18px 0;flex-wrap:wrap;flex-shrink:0;background:#F0FDF9;}
+.qb{font-size:11px;padding:5px 11px;border:.5px solid #B2DFDB;border-radius:20px;background:#FFFFFF;color:#888;cursor:pointer;font-family:Georgia,serif;}
+
+
+
+.dot{width:5px;height:5px;border-radius:50%;background:#00897B;animation:bnc 1.2s infinite;display:inline-block;}
+.dot:nth-child(2){animation-delay:.2s;}.dot:nth-child(3){animation-delay:.4s;}
+@keyframes bnc{0%,80%,100%{transform:translateY(0)}40%{transform:translateY(-6px)}}
+.drow{display:flex;gap:5px;align-items:center;padding:4px 2px;}
+.tblock{background:#004D40;padding:28px 18px 22px;text-align:center;flex-shrink:0;}
+.tline{display:flex;justify-content:center;align-items:baseline;line-height:1;}
+.tc{font-family:Georgia,'Times New Roman',serif;font-size:82px;font-weight:900;line-height:1;letter-spacing:-3px;display:inline-block;}
+.tc.si{background:linear-gradient(180deg,#fff 0%,#d8d8d8 25%,#888 52%,#d0d0d0 75%,#aaa 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;filter:drop-shadow(0 2px 2px #000);}
+.tc.rd{background:linear-gradient(180deg,#FFE566 0%,#FFD600 50%,#F9A825 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+
+
+
+
+
+.trule{height:2px;border-radius:2px;background:linear-gradient(90deg,transparent,#FFD600 25%,#FFD600 75%,transparent);margin:10px 22px 12px;opacity:.85;}
+.tslogan{font-size:12px;font-style:italic;color:#B2DFDB;line-height:1.6;padding:0 16px;text-shadow:0 1px 2px rgba(0,0,0,.25);}
+.fpwrap{display:flex;flex-direction:column;align-items:center;gap:8px;margin-top:6px;cursor:pointer;-webkit-tap-highlight-color:transparent;user-select:none;}
+
+.fpwrap:active img{transform:scale(.95);}
+.fppill{background:linear-gradient(180deg,#FFE566 0%,#FFD600 55%,#F9A825 100%);color:#1A2E2B;font-family:Georgia,serif;font-size:14px;font-weight:700;letter-spacing:2px;padding:11px 36px;border-radius:25px;box-shadow:0 4px 14px rgba(249,168,37,.45);}
+.fpsub{font-family:Georgia,serif;font-size:11px;color:#00897B;font-weight:700;letter-spacing:1.5px;}
+.frow{display:flex;align-items:center;gap:14px;padding:13px 15px;border:1px solid #B2DFDB;border-radius:15px;background:#FFFFFF;margin-bottom:9px;box-shadow:0 2px 6px rgba(0,105,92,.08);}
+.frow:last-child{margin-bottom:0;}
+.ficon i{color:#00897B !important;font-size:24px !important;}
+.ficon i{color:#00897B !important;font-size:24px !important;}
+.ficon{width:48px;height:48px;border-radius:13px;background:linear-gradient(160deg,#FFE566,#FFD600 55%,#F9A825);box-shadow:0 3px 9px rgba(249,168,37,.4);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:24px;}
+.ftitle{font-size:13px;font-weight:700;color:#222;margin-bottom:2px;}
+.fsub{font-size:11px;color:#999;}
+
+.sb.mic{background:#fff;color:#00897B;border:1.5px solid #00897B;font-size:16px;}
+.sb.mic.rec{background:#c62828;border-color:#c62828;color:#fff;animation:micpulse 1s infinite;}
+@keyframes micpulse{50%{opacity:.55;}}
+.wkrow{display:flex;gap:8px;font-size:12px;padding:3px 0;border-bottom:1px dashed #eee;}
+.wkday{font-weight:700;color:#00897B;width:36px;flex-shrink:0;}
+</style>
+
+</head>
+<body>
+<div class="phone">
+
+<div class="screen active" id="scr-home">
+  <div class="tblock">
+    <div class="tline"><span class="tc si">R</span><span class="tc rd">@</span><span class="tc si">T</span><span class="tc si">H</span><span class="tc si">R</span></div>
+    <div class="tline" style="margin-top:2px;"><span class="tc si">U</span><span class="tc si">N</span><span class="tc rd">1</span><span class="tc si">Q</span></div>
+    <div class="trule"></div>
+    <div class="tslogan">"How can you know what to feed yourself if you don't know your blood type?"</div>
+  </div>
+  <div class="content" style="padding-top:18px;">
+    <div style="text-align:center;padding:2px 0;">
+      <div style="font-size:17px;font-weight:700;color:#004D40;margin-bottom:5px;">Your blood type is your blueprint.</div>
+      <div style="font-size:12px;color:#00897B;line-height:1.6;">Most people eat for trends. You'll eat for your biology.</div>
+    </div>
+    <div>
+      <div class="frow"><div class="ficon"><svg width="26" height="26" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 2C12 2 5 10 5 15a7 7 0 0014 0C19 10 12 2 12 2z" fill="#E0245E"/><path d="M12 2C12 2 5 10 5 15a7 7 0 007 7V2z" fill="#C62828" opacity=".55"/><path d="M9 16c0 1.7 1.3 3 3 3" stroke="#FFF" stroke-width="1.4" stroke-linecap="round" fill="none"/></svg></div><div><div class="ftitle">Blood-type food guide</div><div class="fsub">Personalised eat, avoid &amp; limit lists</div></div></div>
+      <div class="frow"><div class="ficon"><svg width="26" height="26" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><rect x="3" y="4" width="18" height="17" rx="2.5" fill="#FFFFFF"/><path d="M3 6.5A2.5 2.5 0 015.5 4h13A2.5 2.5 0 0121 6.5V9H3z" fill="#E0245E"/><rect x="7" y="1.5" width="2" height="4.5" rx="1" fill="#004D40"/><rect x="15" y="1.5" width="2" height="4.5" rx="1" fill="#004D40"/><circle cx="8" cy="13" r="1.2" fill="#00897B"/><circle cx="12" cy="13" r="1.2" fill="#00897B"/><circle cx="16" cy="13" r="1.2" fill="#00897B"/><circle cx="8" cy="17" r="1.2" fill="#00897B"/><circle cx="12" cy="17" r="1.2" fill="#00897B"/><circle cx="16" cy="17" r="1.2" fill="#F9A825"/></svg></div><div><div class="ftitle">Daily meal plans</div><div class="fsub">Built around your biology</div></div></div>
+      <div class="frow"><div class="ficon"><svg width="26" height="26" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M21 11.5a8.5 8.5 0 0 1-8.5 8.5c-1.5 0-2.9-.4-4.1-1L3 20l1.1-4.4A8.5 8.5 0 1 1 21 11.5z" fill="#004D40"/><circle cx="8.6" cy="11.5" r="1.2" fill="#FFFFFF"/><circle cx="12.5" cy="11.5" r="1.2" fill="#FFFFFF"/><circle cx="16.4" cy="11.5" r="1.2" fill="#FFFFFF"/><path d="M19.2 3.2c.9-.9 2.4-.9 3.2 0 .9.9.9 2.3 0 3.2L20 8.8l-2.4-2.4c-.9-.9-.9-2.3 0-3.2.8-.9 2.3-.9 3.2 0z" transform="scale(.85) translate(2.5 -.5)" fill="#E0245E"/></svg></div><div><div class="ftitle">AI nutrition coach</div><div class="fsub">Ask anything, get instant answers</div></div></div>
+    </div>
+    <div class="fpwrap" onclick="goTo('scr-select')" role="button" aria-label="Find my blood type">
+      <svg width="112" height="132" viewBox="0 0 120 142" xmlns="http://www.w3.org/2000/svg" style="display:block;">
+<defs><linearGradient id="dropg" x1="0" y1="0" x2="1" y2="1">
+<stop offset="0" stop-color="#FF6659"/><stop offset=".45" stop-color="#E02020"/><stop offset="1" stop-color="#8E0E0E"/>
+</linearGradient></defs>
+<ellipse cx="60" cy="134" rx="32" ry="6" fill="#004D40" opacity=".12"/>
+<path d="M60 6 C60 6 21 58 21 89 a39 39 0 0 0 78 0 C99 58 60 6 60 6 Z" fill="url(#dropg)"/>
+<path d="M37 72 C28.5 86 28.5 100 37 110" stroke="#FFFFFF" stroke-width="6.5" stroke-linecap="round" fill="none" opacity=".9"/>
+<circle cx="44" cy="60" r="4" fill="#FFFFFF" opacity=".75"/>
+</svg>
+      <div class="fppill">FIND MY TYPE</div>
+    </div>
+  </div>
+  <div class="nav-bar" style="position:sticky;bottom:0;margin-top:auto;">
+    <button class="nav-btn active" onclick="goTo('scr-home')"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5L12 3l9 7.5"/><path d="M5 9.5V21h5v-6h4v6h5V9.5"/></svg>Home</button>
+    <button class="nav-btn " onclick="goCoach()"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.5 8.5 0 0 1-8.5 8.5c-1.5 0-2.9-.4-4.1-1L3 20l1.1-4.4A8.5 8.5 0 1 1 21 11.5z"/></svg>Coach</button>
+    <button class="nav-btn " onclick="goMyType()"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="3.5"/><path d="M5 20c0-3.6 3.1-6 7-6s7 2.4 7 6"/></svg>My type</button>
+  </div>
+</div>
+
+<div class="screen" id="scr-select">
+  <div class="top-bar"><div class="logo">R<span>@</span>THR UN<span>1</span>Q</div></div>
+  <div class="content" style="padding-top:14px;">
+    <div style="font-size:18px;font-weight:700;color:#222;">Select your blood type</div>
+    <div style="font-size:12px;color:#aaa;margin-top:-4px;line-height:1.5;">Don't know yours? A simple home test kit tells you in minutes.</div>
+    <div class="type-grid">
+      <div class="type-btn" id="tbtn-A+" onclick="selType('A+')"><div class="tl">A+</div><div class="ts">Cultivator</div></div>
+      <div class="type-btn" id="tbtn-A-" onclick="selType('A-')"><div class="tl">A-</div><div class="ts">Type A</div></div>
+      <div class="type-btn sel" id="tbtn-B+" onclick="selType('B+')"><div class="tl">B+</div><div class="ts">Nomad</div></div>
+      <div class="type-btn" id="tbtn-B-" onclick="selType('B-')"><div class="tl">B-</div><div class="ts">Type B</div></div>
+      <div class="type-btn" id="tbtn-AB+" onclick="selType('AB+')"><div class="tl">AB+</div><div class="ts">Enigma</div></div>
+      <div class="type-btn" id="tbtn-AB-" onclick="selType('AB-')"><div class="tl">AB-</div><div class="ts">Rarest</div></div>
+      <div class="type-btn" id="tbtn-O+" onclick="selType('O+')"><div class="tl">O+</div><div class="ts">Hunter</div></div>
+      <div class="type-btn" id="tbtn-O-" onclick="selType('O-')"><div class="tl">O-</div><div class="ts">Universal</div></div>
+    </div>
+    
+    <div style="background:#E0F2F1;border:1px solid #B2DFDB;border-radius:15px;padding:16px 18px;margin-top:4px;">
+      <div style="font-size:12px;font-weight:700;color:#00897B;margin-bottom:6px;display:flex;align-items:center;gap:6px;">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="#00897B"><path d="M12 2C12 2 5 10 5 15a7 7 0 0014 0C19 10 12 2 12 2z"/></svg>
+        Don't know your blood type?
+      </div>
+      <div style="font-size:12px;color:#888;line-height:1.7;margin-bottom:12px;">Most people don't. Here are 3 easy ways to find out:</div>
+      <div style="display:flex;flex-direction:column;gap:8px;">
+        <a href="https://www.amazon.com/s?k=blood+type+test+kit" target="_blank" style="display:flex;align-items:center;gap:10px;background:#FFFFFF;border:1px solid #B2DFDB;border-radius:11px;padding:10px 13px;text-decoration:none;">
+          <span style="font-size:18px;">📦</span>
+          <div>
+            <div style="font-size:12px;font-weight:700;color:#333;">Amazon Home Test Kit</div>
+            <div style="font-size:11px;color:#aaa;">Ships worldwide · Results in minutes · Under $15</div>
+          </div>
+          <span style="margin-left:auto;color:#00897B;font-size:14px;">→</span>
+        </a>
+        <a href="https://www.redcrossblood.org/donate-blood/blood-types.html" target="_blank" style="display:flex;align-items:center;gap:10px;background:#FFFFFF;border:1px solid #B2DFDB;border-radius:11px;padding:10px 13px;text-decoration:none;">
+          <span style="font-size:18px;">🩸</span>
+          <div>
+            <div style="font-size:12px;font-weight:700;color:#333;">American Red Cross</div>
+            <div style="font-size:11px;color:#aaa;">Donate blood · Get your type free</div>
+          </div>
+          <span style="margin-left:auto;color:#00897B;font-size:14px;">→</span>
+        </a>
+        <a href="https://www.labcorp.com/tests/006049/abo-grouping-and-rh-typing" target="_blank" style="display:flex;align-items:center;gap:10px;background:#FFFFFF;border:1px solid #B2DFDB;border-radius:11px;padding:10px 13px;text-decoration:none;">
+          <span style="font-size:18px;">🔬</span>
+          <div>
+            <div style="font-size:12px;font-weight:700;color:#333;">LabCorp Blood Test</div>
+            <div style="font-size:11px;color:#aaa;">ABO & Rh typing · Most insurance covered</div>
+          </div>
+          <span style="margin-left:auto;color:#00897B;font-size:14px;">→</span>
+        </a>
+      </div>
+    </div>
+    <button class="abtn" onclick="confirmType()">REVEAL MY BLUEPRINT</button>
+    <button class="bbtn" onclick="goTo('scr-home')">&#8592; Back</button>
+  </div>
+  <div class="nav-bar" style="position:sticky;bottom:0;margin-top:auto;">
+    <button class="nav-btn " onclick="goTo('scr-home')"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5L12 3l9 7.5"/><path d="M5 9.5V21h5v-6h4v6h5V9.5"/></svg>Home</button>
+    <button class="nav-btn " onclick="goCoach()"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.5 8.5 0 0 1-8.5 8.5c-1.5 0-2.9-.4-4.1-1L3 20l1.1-4.4A8.5 8.5 0 1 1 21 11.5z"/></svg>Coach</button>
+    <button class="nav-btn active"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="3.5"/><path d="M5 20c0-3.6 3.1-6 7-6s7 2.4 7 6"/></svg>My type</button>
+  </div>
+</div>
+
+<div class="screen" id="scr-dash">
+  <div class="top-bar"><div class="logo">R<span>@</span>THR UN<span>1</span>Q</div><div id="dash-badge" style="background:#E0F2F1;color:#00897B;font-size:14px;font-weight:700;padding:5px 13px;border-radius:20px;border:.5px solid #B2DFDB;">B+</div></div>
+  <div style="flex:1;overflow-y:auto;padding:0 18px 24px;display:flex;flex-direction:column;gap:13px;">
+    <div class="card silver"><div class="irow"><div class="bc" id="dash-circle">B+</div><div class="itext"><h2 id="dash-title">The Nomad</h2><p id="dash-desc">Adaptable but reactive.</p></div></div><div class="srow"><div class="st"><div class="stv" id="ds-pop">9%</div><div class="stl">population</div></div><div class="st"><div class="stv" id="ds-diet">Omnivore</div><div class="stl">diet style</div></div><div class="st"><div class="stv" id="ds-ex">Balance</div><div class="stl">exercise</div></div></div></div>
+    <div class="card"><div class="sec-title">Today's meal plan</div><div id="dash-meals"></div></div>
+    <div class="card"><div class="sec-title">Foods for your type</div><div class="f2"><div class="fc eat"><h3>&#10003; Eat freely</h3><div id="dash-eat"></div></div><div class="fc avoid"><h3>&#10007; Avoid</h3><div id="dash-avoid"></div></div></div><div style="margin-top:11px;"><div style="font-size:11px;font-weight:600;color:#9a7000;margin-bottom:6px;">&#9888; Limit</div><div id="dash-warn"></div></div></div>
+    <div class="card"><div class="sec-title">Health profile</div><div style="font-size:11px;color:#bbb;margin-bottom:6px;">Strengths</div><div class="pills" id="dash-str"></div><div style="font-size:11px;color:#bbb;margin-top:10px;margin-bottom:6px;">Watch out for</div><div class="pills" id="dash-watch"></div></div>
+    <div class="card"><div class="sec-title">Workout plan</div><div id="dash-workout"></div></div>
+    <button class="abtn" onclick="goCoach()">ASK MY AI COACH</button>
+  </div>
+  <div class="nav-bar">
+    <button class="nav-btn active" onclick="goTo('scr-home')"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5L12 3l9 7.5"/><path d="M5 9.5V21h5v-6h4v6h5V9.5"/></svg>Home</button>
+    <button class="nav-btn" onclick="goCoach()"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.5 8.5 0 0 1-8.5 8.5c-1.5 0-2.9-.4-4.1-1L3 20l1.1-4.4A8.5 8.5 0 1 1 21 11.5z"/></svg>Coach</button>
+    <button class="nav-btn" onclick="goMyType()"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="3.5"/><path d="M5 20c0-3.6 3.1-6 7-6s7 2.4 7 6"/></svg>My type</button>
+  </div>
+</div>
+
+<div class="screen" id="scr-chat" style="justify-content:space-between;">
+  <div class="top-bar" style="padding-bottom:8px;flex-shrink:0;">
+    <div style="display:flex;align-items:center;gap:10px;"><div style="width:36px;height:36px;border-radius:50%;background:#E0F2F1;border:.5px solid #B2DFDB;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#00897B;">RU</div><div><div style="font-size:14px;font-weight:700;color:#222;">R@THR UN1Q Coach</div><div style="font-size:10px;color:#00897B;">Online &middot; Type <span id="chat-type-label">B+</span></div></div></div>
+  </div>
+  <div class="qrow" id="quick-row">
+    <button class="qb" onclick="qs('Why is chicken bad for my blood type?')">Why avoid chicken?</button>
+    <button class="qb" onclick="qs('Give me a full 7-day meal plan for my blood type')">7-day plan</button>
+    <button class="qb" onclick="qs('Best supplements for my blood type?')">Supplements</button>
+    <button class="qb" onclick="qs('What should I order at a restaurant?')">Eating out</button>
+  </div>
+  <div class="msgs" id="chat-msgs" style="padding-top:10px;"></div>
+  <div class="inp-row"><input type="text" id="chat-in" placeholder="Ask your coach..." onkeydown="if(event.key==='Enter')sc()"/><button class="sb mic" onclick="stt()" id="chat-mic" title="Speak instead of typing">&#127908;</button><button class="sb" onclick="sc()" id="chat-send">&#10148;</button></div>
+  <div class="nav-bar">
+    <button class="nav-btn" onclick="goTo('scr-home')"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5L12 3l9 7.5"/><path d="M5 9.5V21h5v-6h4v6h5V9.5"/></svg>Home</button>
+    <button class="nav-btn active"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.5 8.5 0 0 1-8.5 8.5c-1.5 0-2.9-.4-4.1-1L3 20l1.1-4.4A8.5 8.5 0 1 1 21 11.5z"/></svg>Coach</button>
+    <button class="nav-btn" onclick="goMyType()"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="3.5"/><path d="M5 20c0-3.6 3.1-6 7-6s7 2.4 7 6"/></svg>My type</button>
+  </div>
+</div>
+
+
+<div class="screen" id="scr-profile">
+  <div class="top-bar"><div class="logo">R<span>@</span>THR UN<span>1</span>Q</div><div id="prof-badge" style="background:#E0F2F1;color:#00897B;font-size:14px;font-weight:700;padding:5px 13px;border-radius:20px;border:.5px solid #B2DFDB;">--</div></div>
+  <div style="flex:1;overflow-y:auto;padding:0 18px 24px;display:flex;flex-direction:column;gap:13px;" id="profile-body"></div>
+  <div class="nav-bar" style="position:sticky;bottom:0;margin-top:auto;">
+    <button class="nav-btn " onclick="goTo('scr-home')"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5L12 3l9 7.5"/><path d="M5 9.5V21h5v-6h4v6h5V9.5"/></svg>Home</button>
+    <button class="nav-btn " onclick="goCoach()"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.5 8.5 0 0 1-8.5 8.5c-1.5 0-2.9-.4-4.1-1L3 20l1.1-4.4A8.5 8.5 0 1 1 21 11.5z"/></svg>Coach</button>
+    <button class="nav-btn active"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="3.5"/><path d="M5 20c0-3.6 3.1-6 7-6s7 2.4 7 6"/></svg>My type</button>
+  </div>
+</div>
+
+<!-- PRIVACY POLICY SCREEN -->
+<div class="screen" id="scr-privacy">
+  <div class="top-bar">
+    <div class="logo">R<span>@</span>THR UN<span>1</span>Q</div>
+  </div>
+  <div style="flex:1;overflow-y:auto;padding:0 18px 24px;display:flex;flex-direction:column;gap:14px;">
+    <div style="font-size:20px;font-weight:700;color:#1A2E2B;padding-top:4px;">Privacy Policy</div>
+    <div style="font-size:11px;color:#888;">Last updated: July 2026 &nbsp;·&nbsp; SunBay Shades LLC</div>
+    <div style="background:#FFFFFF;border:1px solid #B2DFDB;border-radius:16px;padding:16px;display:flex;flex-direction:column;gap:14px;">
+      <div>
+        <div style="font-size:13px;font-weight:700;color:#00897B;margin-bottom:6px;">1. Information We Collect</div>
+        <div style="font-size:12px;color:#666;line-height:1.7;">We collect only your blood type selection to provide personalised nutrition guidance. We do not collect your name, email, or any personally identifiable information without your explicit consent.</div>
+      </div>
+      <div>
+        <div style="font-size:13px;font-weight:700;color:#00897B;margin-bottom:6px;">2. How We Use Your Data</div>
+        <div style="font-size:12px;color:#666;line-height:1.7;">Your blood type selection is used solely to generate personalised food guides, meal plans, and AI coaching responses. This data is processed in real-time and not stored on our servers.</div>
+      </div>
+      <div>
+        <div style="font-size:13px;font-weight:700;color:#00897B;margin-bottom:6px;">3. AI Coach Conversations</div>
+        <div style="font-size:12px;color:#666;line-height:1.7;">Conversations with the AI nutrition coach are processed via Anthropic's API. We do not store your conversation history. Please review Anthropic's privacy policy at anthropic.com/privacy.</div>
+      </div>
+      <div>
+        <div style="font-size:13px;font-weight:700;color:#00897B;margin-bottom:6px;">4. Medical Disclaimer</div>
+        <div style="font-size:12px;color:#666;line-height:1.7;">R@THR UN1Q is for educational and informational purposes only. It is not a substitute for professional medical advice, diagnosis, or treatment. Always consult your physician before making dietary changes.</div>
+      </div>
+      <div>
+        <div style="font-size:13px;font-weight:700;color:#00897B;margin-bottom:6px;">5. Third-Party Links</div>
+        <div style="font-size:12px;color:#666;line-height:1.7;">This app contains links to Amazon, American Red Cross, and LabCorp. We are not responsible for the privacy practices of these third-party services.</div>
+      </div>
+      <div>
+        <div style="font-size:13px;font-weight:700;color:#00897B;margin-bottom:6px;">6. Contact Us</div>
+        <div style="font-size:12px;color:#666;line-height:1.7;">For privacy questions: privacy@sunbayshades.llc<br/>SunBay Shades LLC, West Palm Beach, FL, USA</div>
+      </div>
+    </div>
+    <button onclick="goTo('scr-home')" style="display:block;width:100%;padding:13px;background:#E0F2F1;color:#00695C;border:1.5px solid #B2DFDB;border-radius:15px;font-size:14px;font-weight:700;font-family:Georgia,serif;cursor:pointer;">← Back to App</button>
+  </div>
+  <div class="nav-bar" style="position:sticky;bottom:0;margin-top:auto;">
+    <button class="nav-btn active" onclick="goTo('scr-home')"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5L12 3l9 7.5"/><path d="M5 9.5V21h5v-6h4v6h5V9.5"/></svg>Home</button>
+    <button class="nav-btn " onclick="goCoach()"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.5 8.5 0 0 1-8.5 8.5c-1.5 0-2.9-.4-4.1-1L3 20l1.1-4.4A8.5 8.5 0 1 1 21 11.5z"/></svg>Coach</button>
+    <button class="nav-btn " onclick="goMyType()"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="3.5"/><path d="M5 20c0-3.6 3.1-6 7-6s7 2.4 7 6"/></svg>My type</button>
+  </div>
+</div>
+</div>
+<script>
+const DB={'A+':{title:'The Cultivator',pop:'36%',diet:'Plant-based',ex:'Yoga',desc:'Your gut thrives on plants. Red meat works against your biology.',eat:['Tofu','Salmon','Lentils','Spinach','Oats','Walnuts','Pineapple'],avoid:['Red meat','Dairy','Peppers','Potatoes'],warn:['Corn','Eggplant','Cashews'],meals:[{t:'Breakfast',n:'Oats & blueberries',d:'Walnuts, honey drizzle'},{t:'Lunch',n:'Lentil & spinach soup',d:'Rye bread, olive oil'},{t:'Snack',n:'Pineapple + almonds',d:'Natural digestive enzymes'},{t:'Dinner',n:'Baked salmon & broccoli',d:'Brown rice, kale'}],strengths:['Calm immunity','Heart health','Antioxidant use'],watch:['Low stomach acid','Meat digestion','Cortisol']},'A-':{title:'The Cultivator',pop:'6%',diet:'Plant-based',ex:'Yoga',desc:'Rarer A type. Same plant-rich needs, strong stress sensitivity.',eat:['Tofu','Salmon','Lentils','Spinach','Oats','Rice'],avoid:['Red meat','Dairy','Peppers','Kidney beans'],warn:['Corn','Eggplant','Cashews'],meals:[{t:'Breakfast',n:'Miso & avocado rye',d:'Tofu, sesame-free'},{t:'Lunch',n:'Quinoa veggie bowl',d:'Tahini lemon'},{t:'Snack',n:'Green tea + crackers',d:'Calm afternoon boost'},{t:'Dinner',n:'Sardines on rye',d:'Spinach & garlic'}],strengths:['Focused calm','Flexible gut','Antioxidant use'],watch:['Anxiety','B12 levels','Meat digestion']},'B+':{title:'The Nomad',pop:'9%',diet:'Omnivore',ex:'Balance',desc:'Adaptable but reactive — strong opinions about chicken and corn.',eat:['Lamb','Turkey','Cod','Salmon','Eggs','Low-fat dairy','Oats','Leafy greens','Banana','Pineapple'],avoid:['Chicken','Corn','Lentils','Peanuts','Buckwheat','Tomatoes'],warn:['Pork','Shellfish','Sunflower oil'],meals:[{t:'Breakfast',n:'Oatmeal, banana & walnuts',d:'Kefir or low-fat milk'},{t:'Lunch',n:'Grilled lamb salad',d:'Mixed greens, feta, lemon'},{t:'Snack',n:'Yoghurt & pineapple',d:'Probiotic boost'},{t:'Dinner',n:'Baked cod & brown rice',d:'Broccoli, olive oil'}],strengths:['Strong immunity','Mental agility','Dairy tolerance','Flexible metabolism'],watch:['Chicken reactions','Corn sensitivity','Autoimmune risk']},'B-':{title:'The Nomad',pop:'2%',diet:'Omnivore',ex:'Balance',desc:'One of the rarest types. Same Nomad profile.',eat:['Lamb','Venison','Turkey','Salmon','Eggs','Low-fat dairy','Oats','Leafy greens','Banana'],avoid:['Chicken','Corn','Lentils','Peanuts','Buckwheat','Tomatoes'],warn:['Pork','Shellfish','Sunflower seeds'],meals:[{t:'Breakfast',n:'Scrambled eggs & spinach',d:'Feta crumbled on top'},{t:'Lunch',n:'Turkey & rice bowl',d:'Steamed greens, ginger'},{t:'Snack',n:'Banana + almonds',d:'Stable energy'},{t:'Dinner',n:'Roast lamb & sweet potato',d:'Rosemary, broccoli'}],strengths:['Rare adaptive immunity','Dairy tolerance','Mental clarity'],watch:['Chicken sensitivity','Lentil bloating','Corn']},'AB+':{title:'The Enigma',pop:'3%',diet:'Mixed',ex:'Calm+moderate',desc:'Newest blood type. Complex digestion, highly adaptable immunity.',eat:['Tofu','Seafood','Dairy','Green veg','Kelp','Pineapple','Walnuts','Turkey','Oats'],avoid:['Red meat','Kidney beans','Corn','Buckwheat','Peppers'],warn:['Chicken','Caffeine','Alcohol'],meals:[{t:'Breakfast',n:'Yoghurt parfait & walnuts',d:'Oats, pineapple'},{t:'Lunch',n:'Tofu & seaweed salad',d:'Brown rice'},{t:'Snack',n:'Grapes & mozzarella',d:'AB-friendly pairing'},{t:'Dinner',n:'Baked turkey & greens',d:'Olive oil, rice'}],strengths:['Adaptable immunity','Dairy & plant tolerance','Spiritual sensitivity'],watch:['Low stomach acid','Heart health','Immune overdrive']},'AB-':{title:'The Enigma',pop:'1%',diet:'Mixed',ex:'Calm+moderate',desc:'Rarest blood type. Complex needs, powerful immunity.',eat:['Tofu','Seafood','Dairy','Green veg','Pineapple','Walnuts','Turkey','Kelp'],avoid:['Red meat','Corn','Buckwheat','Peppers','Kidney beans'],warn:['Chicken','Caffeine','Sunflower seeds'],meals:[{t:'Breakfast',n:'Oat porridge & grapes',d:'Walnuts, green tea'},{t:'Lunch',n:'Salmon & rice bowl',d:'Miso soup, bok choy'},{t:'Snack',n:'Cottage cheese & pineapple',d:'Digestive-friendly'},{t:'Dinner',n:'Baked cod & greens',d:'Ginger soy, rice'}],strengths:['Rare immunity','Adaptable digestion','High intuition'],watch:['Very low stomach acid','Red meat intolerance','Stress']},'O+':{title:'The Hunter',pop:'38%',diet:'High protein',ex:'Intense',desc:'Original blood type. Built for meat, intense exercise, grain-light.',eat:['Beef','Lamb','Venison','Cod','Mackerel','Kale','Spinach','Sweet potato','Walnuts','Figs'],avoid:['Wheat','Corn','Dairy','Lentils','Kidney beans','Cauliflower'],warn:['Oats','Potatoes','Avocado'],meals:[{t:'Breakfast',n:'Beef patty & kale',d:'Poached egg, no toast'},{t:'Lunch',n:'Grilled lamb & sweet potato',d:'Spinach, olive oil'},{t:'Snack',n:'Walnuts + dried figs',d:'Grain-free energy'},{t:'Dinner',n:'Baked mackerel & broccoli',d:'Lemon, garlic'}],strengths:['High protein metabolism','Strong stomach acid','Lean muscle','Resilient immunity'],watch:['Wheat intolerance','Dairy bloating','Thyroid']},'O-':{title:'The Hunter',pop:'7%',diet:'High protein',ex:'Intense',desc:'Universal donor. Same Hunter profile.',eat:['Beef','Lamb','Venison','Cod','Mackerel','Kale','Spinach','Sweet potato','Walnuts'],avoid:['Wheat','Corn','Dairy','Lentils','Kidney beans'],warn:['Oats','Potatoes','Nightshades'],meals:[{t:'Breakfast',n:'Eggs & smoked salmon',d:'Spinach, no bread'},{t:'Lunch',n:'Grilled beef & roasted veg',d:'Sweet potato, kale'},{t:'Snack',n:'Hard-boiled eggs + plums',d:'Protein + natural sugar'},{t:'Dinner',n:'Venison stew & broccoli',d:'Herb broth'}],strengths:['Powerful digestion','Lean muscle','Universal donor'],watch:['Grain sensitivity','Dairy reactions','Joint inflammation']}};
+let cur='B+',hist=[],busy=false,ci=false;
+function goTo(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));var el=document.getElementById(id);if(el)el.classList.add('active');window.scrollTo(0,0);}
+function selType(t){cur=t;document.querySelectorAll('.type-btn').forEach(b=>b.classList.remove('sel'));document.getElementById('tbtn-'+t).classList.add('sel');}
+function confirmType(){profileSave(cur);loadDash(cur);loadProfile();goTo('scr-dash');}
+function loadDash(t){const d=DB[t];['dash-badge','dash-circle'].forEach(id=>document.getElementById(id).textContent=t);document.getElementById('dash-title').textContent=d.title;document.getElementById('dash-desc').textContent=d.desc;document.getElementById('ds-pop').textContent=d.pop;document.getElementById('ds-diet').textContent=d.diet;document.getElementById('ds-ex').textContent=d.ex;document.getElementById('dash-eat').innerHTML=d.eat.slice(0,7).map(f=>'<span class="ft e">'+f+'</span>').join('');document.getElementById('dash-avoid').innerHTML=d.avoid.slice(0,6).map(f=>'<span class="ft a">'+f+'</span>').join('');document.getElementById('dash-warn').innerHTML=d.warn.map(f=>'<span class="ft w">'+f+'</span>').join('');document.getElementById('dash-meals').innerHTML=d.meals.map(m=>'<div class="mr"><div class="mt">'+m.t+'</div><div><div class="mn">'+m.n+'</div><div class="md">'+m.d+'</div></div></div>').join('');document.getElementById('dash-str').innerHTML=d.strengths.map(s=>'<span class="pill s">'+s+'</span>').join('');document.getElementById('dash-watch').innerHTML=d.watch.map(s=>'<span class="pill w">'+s+'</span>').join('');}
+function initChat(){document.getElementById('chat-type-label').textContent=cur;if(ci&&hist.length)return;ci=true;hist=[];document.getElementById('chat-msgs').innerHTML='';am('ai','Hi! I am your R@THR UN1Q coach for blood type '+cur+' — the '+DB[cur].title+'. Ask me anything about what to eat, avoid, meal ideas, supplements, or eating out.');}
+function am(role,text){const box=document.getElementById('chat-msgs');const d=document.createElement('div');d.className='msg '+(role==='user'?'u':role);d.innerHTML='<div class="av">'+(role==='ai'?'RU':'Me')+'</div><div class="bb">'+text+'</div>';box.appendChild(d);box.scrollTop=box.scrollHeight;}
+function al(){const box=document.getElementById('chat-msgs');const d=document.createElement('div');d.className='msg ai';d.id='ldot';d.innerHTML='<div class="av">RU</div><div class="bb"><div class="drow"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div></div>';box.appendChild(d);box.scrollTop=box.scrollHeight;}
+function rl(){const el=document.getElementById('ldot');if(el)el.remove();}
+function qs(t){document.getElementById('chat-in').value=t;sc();}
+const SYS='You are the R@THR UN1Q AI nutrition coach. User blood type: {BT} ({TITLE}). B+/B-: AVOID chicken,corn,lentils,peanuts,sesame,buckwheat. EAT lamb,turkey,venison,fish,eggs,low-fat dairy,oats,leafy greens,banana,pineapple. A+/A-: AVOID red meat,dairy,kidney beans,peppers. EAT tofu,lentils,salmon,spinach,oats,rice. O+/O-: AVOID wheat,corn,dairy,lentils. EAT beef,lamb,venison,fish,kale,sweet potato. AB+/AB-: AVOID red meat,corn,buckwheat. EAT tofu,seafood,dairy,green veg,turkey. Be warm and encouraging. 3-5 sentences unless meal plan requested. Tie advice to blood type. Brief doctor disclaimer for medical decisions. Workouts by type - O: intense cardio, strength, martial arts, endurance. A: yoga, tai chi, pilates, light cardio, low-impact strength. B: balanced mix of moderate cardio, functional strength, outdoor and group sports, plus yoga. AB: hybrid of A and B - moderate aerobic plus calming work. Frame fitness advice as blood-type-inspired (D\'Adamo model), not established medical science.';
+async function sc(){if(busy)return;const inp=document.getElementById('chat-in');const txt=inp.value.trim();if(!txt)return;if(_recOn&&_rec)_rec.stop();inp.value='';busy=true;document.getElementById('chat-send').disabled=true;document.getElementById('quick-row').style.display='none';am('user',txt);hist.push({role:'user',content:txt});al();const sys=SYS.replace('{BT}',cur).replace('{TITLE}',DB[cur].title);let reply;try{reply=await askAI(sys,hist);}catch(e){reply=localCoach(txt);}rl();am('ai',reply);hist.push({role:'assistant',content:reply});if(hist.length>16)hist=hist.slice(-16);busy=false;document.getElementById('chat-send').disabled=false;}
+loadDash('B+');
+
+/* ================= R@THR UN1Q v2 additions ================= */
+
+/* ---- 1. AMAZON AFFILIATE ----
+   Paste your Amazon Associates tracking ID between the quotes below
+   (get it free at affiliate-program.amazon.com — looks like 'rathrun1q-20').
+   Every Amazon link on the site will automatically earn you commission. */
+const AMAZON_AFFILIATE_TAG = '';
+
+/* ---- 2. AI CONNECTION ----
+   Option A (recommended): deploy a proxy (e.g. Cloudflare Worker) that holds
+   your Anthropic API key, and paste its URL here. Never put a real API key
+   directly in this public file. If both are empty, the built-in coach below
+   answers instantly from your blood-type database, so chat always works. */
+const PROXY_URL = '';
+
+/* ---- WORKOUT REGIMENS (Rh factor does not change the exercise profile) ---- */
+const WK={
+ O:{name:'The High-Energy Athlete',why:'Type O responds best to elevated heart rate and intense movement - hard training helps burn off stress hormones.',
+  best:['High-intensity cardio (running, cycling, HIIT)','Strength / resistance training','Martial arts (boxing, kickboxing, Muay Thai)','Endurance sports (swimming, distance running)'],
+  week:[['Mon','HIIT sprints or spin class - 30 min'],['Tue','Full-body strength training - 45 min'],['Wed','Boxing or martial arts - 45 min'],['Thu','Strength (upper-body focus) - 40 min'],['Fri','Long run, swim or ride - 45-60 min'],['Sat','Active recovery - brisk hike or bike'],['Sun','Rest']]},
+ A:{name:'The Calm-Mind Trainer',why:'Type A carries a higher cortisol response - calming, low-impact movement improves recovery and results.',
+  best:['Yoga, tai chi and meditation','Pilates, stretching and flexibility work','Light-to-moderate cardio (walking, swimming, cycling)','Low-impact strength (bodyweight, bands)'],
+  week:[['Mon','Yoga flow - 40 min'],['Tue','Brisk walk or easy swim - 30 min'],['Wed','Pilates or band strength - 35 min'],['Thu','Tai chi + 10 min breathwork'],['Fri','Light cycle or walk - 30 min'],['Sat','Long stretch + meditation - 30 min'],['Sun','Rest']]},
+ B:{name:'The Balanced Mover',why:'Type B physiology thrives on balance between intensity and calm.',
+  best:['Mixed routine: 3 days cardio + 2 days yoga or tai chi','Moderate functional strength training','Outdoor activities (hiking, biking)','Group sports (tennis, basketball)'],
+  week:[['Mon','Moderate cardio - jog or bike 35 min'],['Tue','Functional strength - 40 min'],['Wed','Yoga or tai chi - 40 min'],['Thu','Group sport or swim - 45 min'],['Fri','Functional strength - 40 min'],['Sat','Outdoor hike or long bike ride'],['Sun','Rest or gentle stretch']]},
+ AB:{name:'The Hybrid Profile',why:'AB blends traits of A and B - it needs both calming work and moderate aerobic activity.',
+  best:['Combination of A + B routines (yoga + moderate cardio)','Low-impact strength (bands, light weights)','Swimming, cycling, walking at a moderate pace','Stress management (breathwork, meditation)'],
+  week:[['Mon','Moderate swim or cycle - 30 min'],['Tue','Yoga flow - 40 min'],['Wed','Light strength (bands/weights) - 35 min'],['Thu','Brisk walk + 10 min breathwork'],['Fri','Moderate cardio - 30 min'],['Sat','Tai chi or long stretch - 30 min'],['Sun','Rest']]}};
+const wkOf=t=>WK[(t||'').replace(/[+-]/g,'')];
+function wkHTML(t){const w=wkOf(t);if(!w)return '';
+ let h='<div style="font-size:13px;font-weight:700;color:#00695C;margin-bottom:3px;">'+w.name+'</div>';
+ h+='<div style="font-size:11px;color:#888;line-height:1.55;margin-bottom:8px;">'+w.why+'</div>';
+ h+=w.best.map(b=>'<div style="font-size:12px;color:#333;padding:2px 0;">&#8226; '+b+'</div>').join('');
+ h+='<div style="font-size:11px;color:#bbb;margin:9px 0 4px;">Weekly plan</div>';
+ h+=w.week.map(d=>'<div class="wkrow"><span class="wkday">'+d[0]+'</span><span style="color:#444;">'+d[1]+'</span></div>').join('');
+ h+='<div style="font-size:10px;color:#bbb;margin-top:9px;line-height:1.5;">Beginner? Halve the times. Advanced? Add a set or 10 minutes. Blood-type-inspired fitness based on the D\u2019Adamo model - not medical advice; check with your doctor before starting a new routine.</div>';
+ return h;}
+
+/* ---- SUPPLEMENT NOTES for the built-in coach ---- */
+const SUPP={A:'vitamin B12, iron from plant sources, vitamin C and probiotics',B:'magnesium, digestive enzymes and vitamin D',AB:'vitamin C, zinc and digestive enzymes to support lower stomach acid',O:'B-complex vitamins, vitamin K and iodine to support thyroid function'};
+
+/* ---- 5. MY TYPE = PERSONAL PROFILE (saved on this device) ---- */
+function profileGet(){try{return JSON.parse(localStorage.getItem('ru_profile'))}catch(e){return null}}
+function profileSave(t){try{const p=profileGet();localStorage.setItem('ru_profile',JSON.stringify({type:t,since:(p&&p.since)||new Date().toISOString().slice(0,10)}))}catch(e){}}
+function goMyType(){const p=profileGet();if(p&&DB[p.type]){cur=p.type;loadProfile();goTo('scr-profile');}else{goTo('scr-select');}}
+function goCoach(){if(!profileGet()){goTo('scr-select');return;}goTo('scr-chat');initChat();}
+function loadProfile(){const p=profileGet();if(!p)return;const d=DB[p.type];document.getElementById('prof-badge').textContent=p.type;
+ const pill=(x,c)=>'<span style="background:'+c+';border-radius:20px;padding:4px 11px;font-size:11px;font-weight:600;display:inline-block;margin:2px;">'+x+'</span>';
+ let h='<div class="card silver"><div class="irow"><div class="bc">'+p.type+'</div><div class="itext"><h2>'+d.title+'</h2><p>Your personal profile &#183; saved '+p.since+'</p></div></div>';
+ h+='<div class="srow"><div class="st"><div class="stv">'+d.pop+'</div><div class="stl">population</div></div><div class="st"><div class="stv">'+d.diet+'</div><div class="stl">diet style</div></div><div class="st"><div class="stv">'+d.ex+'</div><div class="stl">exercise</div></div></div></div>';
+ h+='<div class="card"><div class="sec-title">My food blueprint</div><div style="font-size:11px;color:#2E7D32;font-weight:700;margin-bottom:4px;">&#10003; Eat freely</div><div>'+d.eat.map(x=>pill(x,'#E8F5E9')).join('')+'</div>';
+ h+='<div style="font-size:11px;color:#c62828;font-weight:700;margin:9px 0 4px;">&#10007; Avoid</div><div>'+d.avoid.map(x=>pill(x,'#FFEBEE')).join('')+'</div>';
+ h+='<div style="font-size:11px;color:#F9A825;font-weight:700;margin:9px 0 4px;">&#9888; Limit</div><div>'+d.warn.map(x=>pill(x,'#FFF8E1')).join('')+'</div></div>';
+ h+='<div class="card"><div class="sec-title">My health profile</div><div style="font-size:11px;color:#bbb;margin-bottom:5px;">Strengths</div><div>'+d.strengths.map(x=>pill(x,'#E0F2F1')).join('')+'</div><div style="font-size:11px;color:#bbb;margin:9px 0 5px;">Watch out for</div><div>'+d.watch.map(x=>pill(x,'#FBE9E7')).join('')+'</div></div>';
+ h+='<div class="card"><div class="sec-title">My workout plan</div>'+wkHTML(p.type)+'</div>';
+ h+='<button class="abtn" onclick="loadDash(cur);goTo(\'scr-dash\')">VIEW TODAY\u2019S MEAL PLAN</button>';
+ h+='<button class="abtn" onclick="goCoach()" style="background:#E0F2F1;color:#00695C;">ASK MY AI COACH</button>';
+ h+='<button class="bbtn" onclick="goTo(\'scr-select\')">Change my blood type</button>';
+ document.getElementById('profile-body').innerHTML=h;}
+
+/* ---- 2b. BUILT-IN COACH (instant answers when the API is unreachable) ---- */
+function localCoach(q){const d=DB[cur],w=wkOf(cur),t=' '+q.toLowerCase()+' ';
+ const hit=list=>list.find(f=>t.includes(f.toLowerCase().split(' ')[0]));
+ if(/workout|exercise|gym|train|fitness|cardio|running|yoga|weight lift/.test(t))
+  return 'For '+cur+' - '+w.name+': '+w.why+' Your best training: '+w.best.join('; ')+'. Your full weekly plan is on your My Type page. (Blood-type-inspired fitness based on the D\u2019Adamo model - check with your doctor before big changes.)';
+ if(/supplement|vitamin/.test(t))
+  return 'Common picks for type '+cur+' in the blood-type model: '+SUPP[cur.replace(/[+-]/g,'')]+'. Always confirm dosing with your doctor or pharmacist before starting anything new.';
+ if(/(7|seven).{0,4}day|meal plan|weekly plan|week of/.test(t)){
+  let out='Here is a '+cur+' template day - repeat it through the week, rotating in swaps from your Eat Freely list:<br>';
+  d.meals.forEach(m=>out+='&#8226; <b>'+m.t+':</b> '+m.n+' - '+m.d+'<br>');
+  return out+'Rotate proteins and greens like '+d.eat.slice(0,5).join(', ')+' so no two days feel the same.';}
+ if(/restaurant|eating out|order|menu|takeout|take out|fast food/.test(t))
+  return 'Eating out as '+cur+' ('+d.title+'): build your plate around '+d.eat.slice(0,4).join(', ')+'. Politely skip '+d.avoid.slice(0,3).join(', ')+'. Grilled protein plus steamed or roasted vegetables is almost always your safest order.';
+ const av=hit(d.avoid);if(av)return av+' is on the Avoid list for '+cur+' ('+d.title+'). In the blood-type model, its lectins clash with your type\u2019s digestion. Better swaps from your Eat Freely list: '+d.eat.slice(0,3).join(', ')+'.';
+ const wr=hit(d.warn);if(wr)return wr+' is a Limit food for '+cur+' - fine occasionally, just keep it out of the daily rotation.';
+ const ok=hit(d.eat);if(ok)return 'Good news - '+ok+' is on your Eat Freely list for '+cur+'. Enjoy it! It pairs well with '+d.eat.filter(x=>x!==ok).slice(0,2).join(' and ')+'.';
+ return 'As a '+cur+' ('+d.title+'): '+d.desc+' Eat freely: '+d.eat.slice(0,6).join(', ')+'. Avoid: '+d.avoid.slice(0,4).join(', ')+'. Ask me about meal plans, supplements, workouts, eating out, or any specific food!';}
+
+/* ---- AI call: proxy first, then direct (works in preview), then built-in coach ---- */
+async function askAI(sys,msgs){
+ const parse=d=>{const t=(d.content||[]).filter(c=>c.type==='text').map(c=>c.text).join('\n');if(!t)throw new Error('empty');return t;};
+ if(PROXY_URL){const r=await fetch(PROXY_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:800,system:sys,messages:msgs})});return parse(await r.json());}
+ const r=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:800,system:sys,messages:msgs})});return parse(await r.json());}
+
+/* ---- 3. SPEECH-TO-TEXT (tap the mic, speak, tap send) ---- */
+let _rec=null,_recOn=false;
+function stt(){const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+ if(!SR){alert('Voice input is not supported in this browser. Try Chrome (Android/desktop) or Safari (iPhone).');return;}
+ const mb=document.getElementById('chat-mic'),inp=document.getElementById('chat-in');
+ if(_recOn){_rec.stop();return;}
+ _rec=new SR();_rec.lang='en-US';_rec.interimResults=true;_rec.continuous=false;
+ _rec.onstart=()=>{_recOn=true;mb.classList.add('rec');inp.placeholder='Listening\u2026 tap mic to stop';};
+ _rec.onresult=e=>{let t='';for(const r of e.results)t+=r[0].transcript;inp.value=t;};
+ _rec.onend=()=>{_recOn=false;mb.classList.remove('rec');inp.placeholder='Ask your coach...';inp.focus();};
+ _rec.onerror=()=>{_recOn=false;mb.classList.remove('rec');inp.placeholder='Ask your coach...';};
+ _rec.start();}
+
+/* ---- Startup: restore saved profile, fill workout card, apply affiliate tag ---- */
+(function(){
+ const _ld=loadDash;loadDash=function(t){_ld(t);const el=document.getElementById('dash-workout');if(el)el.innerHTML=wkHTML(t);};
+ const p=profileGet();if(p&&DB[p.type]){cur=p.type;}
+ loadDash(cur);
+ if(AMAZON_AFFILIATE_TAG){document.querySelectorAll('a[href*="amazon."]').forEach(a=>{try{const u=new URL(a.href);u.searchParams.set('tag',AMAZON_AFFILIATE_TAG);a.href=u.toString();}catch(e){}});}
+})();
+
+</script>
+
+<script>
+if('serviceWorker' in navigator){
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('./sw.js')
+      .then(r => console.log('SW registered'))
+      .catch(e => console.log('SW failed', e));
+  });
+}
+</script>
+</body>
+</html>
