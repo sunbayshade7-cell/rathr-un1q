@@ -1,0 +1,8 @@
+[{
+      "relation": ["delegate_permission/common.handle_all_urls"],
+      "target": {
+        "namespace": "android_app",
+        "package_name": "io.github.sunbayshade7_cell.twa",
+        "sha256_cert_fingerprints": ["65:DF:BD:88:47:F4:FF:B4:EF:BF:C8:E6:DB:67:1F:6B:01:20:D1:45:E7:B8:F1:B7:CE:E7:BF:B5:AD:19:36:C1"]
+      }
+    }]
