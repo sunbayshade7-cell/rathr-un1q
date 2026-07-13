@@ -106,6 +106,12 @@ body{background:#005A4E;display:flex;justify-content:center;padding:20px;min-hei
 .ficon{width:48px;height:48px;border-radius:13px;border:1px solid #B2DFDB;background:#E0F2F1;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:24px;color:#00897B;}
 .ftitle{font-size:13px;font-weight:700;color:#222;margin-bottom:2px;}
 .fsub{font-size:11px;color:#999;}
+
+.sb.mic{background:#fff;color:#00897B;border:1.5px solid #00897B;font-size:16px;}
+.sb.mic.rec{background:#c62828;border-color:#c62828;color:#fff;animation:micpulse 1s infinite;}
+@keyframes micpulse{50%{opacity:.55;}}
+.wkrow{display:flex;gap:8px;font-size:12px;padding:3px 0;border-bottom:1px dashed #eee;}
+.wkday{font-weight:700;color:#00897B;width:36px;flex-shrink:0;}
 </style>
 
 </head>
@@ -135,6 +141,11 @@ body{background:#005A4E;display:flex;justify-content:center;padding:20px;min-hei
       <div class="fppill">MY BLOOD TYPE</div>
       <div class="fpsub">TAP TO BEGIN &#8594;</div>
     </div>
+  </div>
+  <div class="nav-bar" style="position:sticky;bottom:0;margin-top:auto;">
+    <button class="nav-btn active" onclick="goTo('scr-home')">&#127968;<br>Home</button>
+    <button class="nav-btn " onclick="goCoach()">&#129504;<br>Coach</button>
+    <button class="nav-btn " onclick="goMyType()">&#128336;<br>My type</button>
   </div>
 </div>
 
@@ -190,6 +201,11 @@ body{background:#005A4E;display:flex;justify-content:center;padding:20px;min-hei
     <button class="abtn" onclick="confirmType()">REVEAL MY BLUEPRINT</button>
     <button class="bbtn" onclick="goTo('scr-home')">&#8592; Back</button>
   </div>
+  <div class="nav-bar" style="position:sticky;bottom:0;margin-top:auto;">
+    <button class="nav-btn " onclick="goTo('scr-home')">&#127968;<br>Home</button>
+    <button class="nav-btn " onclick="goCoach()">&#129504;<br>Coach</button>
+    <button class="nav-btn active">&#128336;<br>My type</button>
+  </div>
 </div>
 
 <div class="screen" id="scr-dash">
@@ -199,12 +215,13 @@ body{background:#005A4E;display:flex;justify-content:center;padding:20px;min-hei
     <div class="card"><div class="sec-title">Today's meal plan</div><div id="dash-meals"></div></div>
     <div class="card"><div class="sec-title">Foods for your type</div><div class="f2"><div class="fc eat"><h3>&#10003; Eat freely</h3><div id="dash-eat"></div></div><div class="fc avoid"><h3>&#10007; Avoid</h3><div id="dash-avoid"></div></div></div><div style="margin-top:11px;"><div style="font-size:11px;font-weight:600;color:#9a7000;margin-bottom:6px;">&#9888; Limit</div><div id="dash-warn"></div></div></div>
     <div class="card"><div class="sec-title">Health profile</div><div style="font-size:11px;color:#bbb;margin-bottom:6px;">Strengths</div><div class="pills" id="dash-str"></div><div style="font-size:11px;color:#bbb;margin-top:10px;margin-bottom:6px;">Watch out for</div><div class="pills" id="dash-watch"></div></div>
-    <button class="abtn" onclick="goTo('scr-chat');initChat();">ASK MY AI COACH</button>
+    <div class="card"><div class="sec-title">Workout plan</div><div id="dash-workout"></div></div>
+    <button class="abtn" onclick="goCoach()">ASK MY AI COACH</button>
   </div>
   <div class="nav-bar">
     <button class="nav-btn active" onclick="goTo('scr-home')">&#127968;<br>Home</button>
-    <button class="nav-btn" onclick="goTo('scr-chat');initChat();">&#129504;<br>Coach</button>
-    <button class="nav-btn" onclick="goTo('scr-select')">&#128336;<br>My type</button>
+    <button class="nav-btn" onclick="goCoach()">&#129504;<br>Coach</button>
+    <button class="nav-btn" onclick="goMyType()">&#128336;<br>My type</button>
   </div>
 </div>
 
@@ -221,14 +238,24 @@ body{background:#005A4E;display:flex;justify-content:center;padding:20px;min-hei
   </div>
   <div class="msgs" id="chat-msgs" style="padding-top:10px;"></div>
   <div class="pbar"><span>&#128274; Unlimited coaching, grocery lists &amp; weekly plans</span><button class="ubtn">.99/mo</button></div>
-  <div class="inp-row"><input type="text" id="chat-in" placeholder="Ask your coach..." onkeydown="if(event.key==='Enter')sc()"/><button class="sb" onclick="sc()" id="chat-send">&#10148;</button></div>
+  <div class="inp-row"><input type="text" id="chat-in" placeholder="Ask your coach..." onkeydown="if(event.key==='Enter')sc()"/><button class="sb mic" onclick="stt()" id="chat-mic" title="Speak instead of typing">&#127908;</button><button class="sb" onclick="sc()" id="chat-send">&#10148;</button></div>
   <div class="nav-bar">
     <button class="nav-btn" onclick="goTo('scr-home')">&#127968;<br>Home</button>
     <button class="nav-btn active">&#129504;<br>Coach</button>
-    <button class="nav-btn" onclick="goTo('scr-select')">&#128336;<br>My type</button>
+    <button class="nav-btn" onclick="goMyType()">&#128336;<br>My type</button>
   </div>
 </div>
 
+
+<div class="screen" id="scr-profile">
+  <div class="top-bar"><div class="logo">R<span>@</span>THR UN<span>1</span>Q</div><div id="prof-badge" style="background:#f0ebe4;color:#00897B;font-size:14px;font-weight:700;padding:5px 13px;border-radius:20px;border:.5px solid #e0d5cc;">--</div></div>
+  <div style="flex:1;overflow-y:auto;padding:0 18px 24px;display:flex;flex-direction:column;gap:13px;" id="profile-body"></div>
+  <div class="nav-bar" style="position:sticky;bottom:0;margin-top:auto;">
+    <button class="nav-btn " onclick="goTo('scr-home')">&#127968;<br>Home</button>
+    <button class="nav-btn " onclick="goCoach()">&#129504;<br>Coach</button>
+    <button class="nav-btn active">&#128336;<br>My type</button>
+  </div>
+</div>
 
 <!-- PRIVACY POLICY SCREEN -->
 <div class="screen" id="scr-privacy">
@@ -266,6 +293,11 @@ body{background:#005A4E;display:flex;justify-content:center;padding:20px;min-hei
     </div>
     <button onclick="goTo('scr-home')" style="display:block;width:100%;padding:13px;background:#E0F2F1;color:#00695C;border:1.5px solid #B2DFDB;border-radius:15px;font-size:14px;font-weight:700;font-family:Georgia,serif;cursor:pointer;">← Back to App</button>
   </div>
+  <div class="nav-bar" style="position:sticky;bottom:0;margin-top:auto;">
+    <button class="nav-btn active" onclick="goTo('scr-home')">&#127968;<br>Home</button>
+    <button class="nav-btn " onclick="goCoach()">&#129504;<br>Coach</button>
+    <button class="nav-btn " onclick="goMyType()">&#128336;<br>My type</button>
+  </div>
 </div>
 </div>
 <script>
@@ -273,16 +305,123 @@ const DB={'A+':{title:'The Cultivator',pop:'36%',diet:'Plant-based',ex:'Yoga',de
 let cur='B+',hist=[],busy=false,ci=false;
 function goTo(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));var el=document.getElementById(id);if(el)el.classList.add('active');window.scrollTo(0,0);}
 function selType(t){cur=t;document.querySelectorAll('.type-btn').forEach(b=>b.classList.remove('sel'));document.getElementById('tbtn-'+t).classList.add('sel');}
-function confirmType(){loadDash(cur);goTo('scr-dash');}
+function confirmType(){profileSave(cur);loadDash(cur);loadProfile();goTo('scr-dash');}
 function loadDash(t){const d=DB[t];['dash-badge','dash-circle'].forEach(id=>document.getElementById(id).textContent=t);document.getElementById('dash-title').textContent=d.title;document.getElementById('dash-desc').textContent=d.desc;document.getElementById('ds-pop').textContent=d.pop;document.getElementById('ds-diet').textContent=d.diet;document.getElementById('ds-ex').textContent=d.ex;document.getElementById('dash-eat').innerHTML=d.eat.slice(0,7).map(f=>'<span class="ft e">'+f+'</span>').join('');document.getElementById('dash-avoid').innerHTML=d.avoid.slice(0,6).map(f=>'<span class="ft a">'+f+'</span>').join('');document.getElementById('dash-warn').innerHTML=d.warn.map(f=>'<span class="ft w">'+f+'</span>').join('');document.getElementById('dash-meals').innerHTML=d.meals.map(m=>'<div class="mr"><div class="mt">'+m.t+'</div><div><div class="mn">'+m.n+'</div><div class="md">'+m.d+'</div></div></div>').join('');document.getElementById('dash-str').innerHTML=d.strengths.map(s=>'<span class="pill s">'+s+'</span>').join('');document.getElementById('dash-watch').innerHTML=d.watch.map(s=>'<span class="pill w">'+s+'</span>').join('');}
 function initChat(){document.getElementById('chat-type-label').textContent=cur;if(ci&&hist.length)return;ci=true;hist=[];document.getElementById('chat-msgs').innerHTML='';am('ai','Hi! I am your R@THR UN1Q coach for blood type '+cur+' — the '+DB[cur].title+'. Ask me anything about what to eat, avoid, meal ideas, supplements, or eating out.');}
 function am(role,text){const box=document.getElementById('chat-msgs');const d=document.createElement('div');d.className='msg '+role;d.innerHTML='<div class="av">'+(role==='ai'?'RU':'Me')+'</div><div class="bb">'+text+'</div>';box.appendChild(d);box.scrollTop=box.scrollHeight;}
 function al(){const box=document.getElementById('chat-msgs');const d=document.createElement('div');d.className='msg ai';d.id='ldot';d.innerHTML='<div class="av">RU</div><div class="bb"><div class="drow"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div></div>';box.appendChild(d);box.scrollTop=box.scrollHeight;}
 function rl(){const el=document.getElementById('ldot');if(el)el.remove();}
 function qs(t){document.getElementById('chat-in').value=t;sc();}
-const SYS='You are the R@THR UN1Q AI nutrition coach. User blood type: {BT} ({TITLE}). B+/B-: AVOID chicken,corn,lentils,peanuts,sesame,buckwheat. EAT lamb,turkey,venison,fish,eggs,low-fat dairy,oats,leafy greens,banana,pineapple. A+/A-: AVOID red meat,dairy,kidney beans,peppers. EAT tofu,lentils,salmon,spinach,oats,rice. O+/O-: AVOID wheat,corn,dairy,lentils. EAT beef,lamb,venison,fish,kale,sweet potato. AB+/AB-: AVOID red meat,corn,buckwheat. EAT tofu,seafood,dairy,green veg,turkey. Be warm and encouraging. 3-5 sentences unless meal plan requested. Tie advice to blood type. Brief doctor disclaimer for medical decisions.';
-async function sc(){if(busy)return;const inp=document.getElementById('chat-in');const txt=inp.value.trim();if(!txt)return;inp.value='';busy=true;document.getElementById('chat-send').disabled=true;document.getElementById('quick-row').style.display='none';am('user',txt);hist.push({role:'user',content:txt});al();const sys=SYS.replace('{BT}',cur).replace('{TITLE}',DB[cur].title);try{const res=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:800,system:sys,messages:hist})});const data=await res.json();const reply=data.content?.[0]?.text||'Sorry, try again.';rl();am('ai',reply);hist.push({role:'assistant',content:reply});if(hist.length>16)hist=hist.slice(-16);}catch(e){rl();am('ai','Connection issue — please try again.');}busy=false;document.getElementById('chat-send').disabled=false;}
+const SYS='You are the R@THR UN1Q AI nutrition coach. User blood type: {BT} ({TITLE}). B+/B-: AVOID chicken,corn,lentils,peanuts,sesame,buckwheat. EAT lamb,turkey,venison,fish,eggs,low-fat dairy,oats,leafy greens,banana,pineapple. A+/A-: AVOID red meat,dairy,kidney beans,peppers. EAT tofu,lentils,salmon,spinach,oats,rice. O+/O-: AVOID wheat,corn,dairy,lentils. EAT beef,lamb,venison,fish,kale,sweet potato. AB+/AB-: AVOID red meat,corn,buckwheat. EAT tofu,seafood,dairy,green veg,turkey. Be warm and encouraging. 3-5 sentences unless meal plan requested. Tie advice to blood type. Brief doctor disclaimer for medical decisions. Workouts by type - O: intense cardio, strength, martial arts, endurance. A: yoga, tai chi, pilates, light cardio, low-impact strength. B: balanced mix of moderate cardio, functional strength, outdoor and group sports, plus yoga. AB: hybrid of A and B - moderate aerobic plus calming work. Frame fitness advice as blood-type-inspired (D\'Adamo model), not established medical science.';
+async function sc(){if(busy)return;const inp=document.getElementById('chat-in');const txt=inp.value.trim();if(!txt)return;if(_recOn&&_rec)_rec.stop();inp.value='';busy=true;document.getElementById('chat-send').disabled=true;document.getElementById('quick-row').style.display='none';am('user',txt);hist.push({role:'user',content:txt});al();const sys=SYS.replace('{BT}',cur).replace('{TITLE}',DB[cur].title);let reply;try{reply=await askAI(sys,hist);}catch(e){reply=localCoach(txt);}rl();am('ai',reply);hist.push({role:'assistant',content:reply});if(hist.length>16)hist=hist.slice(-16);busy=false;document.getElementById('chat-send').disabled=false;}
 loadDash('B+');
+
+/* ================= R@THR UN1Q v2 additions ================= */
+
+/* ---- 1. AMAZON AFFILIATE ----
+   Paste your Amazon Associates tracking ID between the quotes below
+   (get it free at affiliate-program.amazon.com — looks like 'rathrun1q-20').
+   Every Amazon link on the site will automatically earn you commission. */
+const AMAZON_AFFILIATE_TAG = '';
+
+/* ---- 2. AI CONNECTION ----
+   Option A (recommended): deploy a proxy (e.g. Cloudflare Worker) that holds
+   your Anthropic API key, and paste its URL here. Never put a real API key
+   directly in this public file. If both are empty, the built-in coach below
+   answers instantly from your blood-type database, so chat always works. */
+const PROXY_URL = '';
+
+/* ---- WORKOUT REGIMENS (Rh factor does not change the exercise profile) ---- */
+const WK={
+ O:{name:'The High-Energy Athlete',why:'Type O responds best to elevated heart rate and intense movement - hard training helps burn off stress hormones.',
+  best:['High-intensity cardio (running, cycling, HIIT)','Strength / resistance training','Martial arts (boxing, kickboxing, Muay Thai)','Endurance sports (swimming, distance running)'],
+  week:[['Mon','HIIT sprints or spin class - 30 min'],['Tue','Full-body strength training - 45 min'],['Wed','Boxing or martial arts - 45 min'],['Thu','Strength (upper-body focus) - 40 min'],['Fri','Long run, swim or ride - 45-60 min'],['Sat','Active recovery - brisk hike or bike'],['Sun','Rest']]},
+ A:{name:'The Calm-Mind Trainer',why:'Type A carries a higher cortisol response - calming, low-impact movement improves recovery and results.',
+  best:['Yoga, tai chi and meditation','Pilates, stretching and flexibility work','Light-to-moderate cardio (walking, swimming, cycling)','Low-impact strength (bodyweight, bands)'],
+  week:[['Mon','Yoga flow - 40 min'],['Tue','Brisk walk or easy swim - 30 min'],['Wed','Pilates or band strength - 35 min'],['Thu','Tai chi + 10 min breathwork'],['Fri','Light cycle or walk - 30 min'],['Sat','Long stretch + meditation - 30 min'],['Sun','Rest']]},
+ B:{name:'The Balanced Mover',why:'Type B physiology thrives on balance between intensity and calm.',
+  best:['Mixed routine: 3 days cardio + 2 days yoga or tai chi','Moderate functional strength training','Outdoor activities (hiking, biking)','Group sports (tennis, basketball)'],
+  week:[['Mon','Moderate cardio - jog or bike 35 min'],['Tue','Functional strength - 40 min'],['Wed','Yoga or tai chi - 40 min'],['Thu','Group sport or swim - 45 min'],['Fri','Functional strength - 40 min'],['Sat','Outdoor hike or long bike ride'],['Sun','Rest or gentle stretch']]},
+ AB:{name:'The Hybrid Profile',why:'AB blends traits of A and B - it needs both calming work and moderate aerobic activity.',
+  best:['Combination of A + B routines (yoga + moderate cardio)','Low-impact strength (bands, light weights)','Swimming, cycling, walking at a moderate pace','Stress management (breathwork, meditation)'],
+  week:[['Mon','Moderate swim or cycle - 30 min'],['Tue','Yoga flow - 40 min'],['Wed','Light strength (bands/weights) - 35 min'],['Thu','Brisk walk + 10 min breathwork'],['Fri','Moderate cardio - 30 min'],['Sat','Tai chi or long stretch - 30 min'],['Sun','Rest']]}};
+const wkOf=t=>WK[(t||'').replace(/[+-]/g,'')];
+function wkHTML(t){const w=wkOf(t);if(!w)return '';
+ let h='<div style="font-size:13px;font-weight:700;color:#00695C;margin-bottom:3px;">'+w.name+'</div>';
+ h+='<div style="font-size:11px;color:#888;line-height:1.55;margin-bottom:8px;">'+w.why+'</div>';
+ h+=w.best.map(b=>'<div style="font-size:12px;color:#333;padding:2px 0;">&#8226; '+b+'</div>').join('');
+ h+='<div style="font-size:11px;color:#bbb;margin:9px 0 4px;">Weekly plan</div>';
+ h+=w.week.map(d=>'<div class="wkrow"><span class="wkday">'+d[0]+'</span><span style="color:#444;">'+d[1]+'</span></div>').join('');
+ h+='<div style="font-size:10px;color:#bbb;margin-top:9px;line-height:1.5;">Beginner? Halve the times. Advanced? Add a set or 10 minutes. Blood-type-inspired fitness based on the D\u2019Adamo model - not medical advice; check with your doctor before starting a new routine.</div>';
+ return h;}
+
+/* ---- SUPPLEMENT NOTES for the built-in coach ---- */
+const SUPP={A:'vitamin B12, iron from plant sources, vitamin C and probiotics',B:'magnesium, digestive enzymes and vitamin D',AB:'vitamin C, zinc and digestive enzymes to support lower stomach acid',O:'B-complex vitamins, vitamin K and iodine to support thyroid function'};
+
+/* ---- 5. MY TYPE = PERSONAL PROFILE (saved on this device) ---- */
+function profileGet(){try{return JSON.parse(localStorage.getItem('ru_profile'))}catch(e){return null}}
+function profileSave(t){try{const p=profileGet();localStorage.setItem('ru_profile',JSON.stringify({type:t,since:(p&&p.since)||new Date().toISOString().slice(0,10)}))}catch(e){}}
+function goMyType(){const p=profileGet();if(p&&DB[p.type]){cur=p.type;loadProfile();goTo('scr-profile');}else{goTo('scr-select');}}
+function goCoach(){if(!profileGet()){goTo('scr-select');return;}goTo('scr-chat');initChat();}
+function loadProfile(){const p=profileGet();if(!p)return;const d=DB[p.type];document.getElementById('prof-badge').textContent=p.type;
+ const pill=(x,c)=>'<span style="background:'+c+';border-radius:20px;padding:4px 11px;font-size:11px;font-weight:600;display:inline-block;margin:2px;">'+x+'</span>';
+ let h='<div class="card silver"><div class="irow"><div class="bc">'+p.type+'</div><div class="itext"><h2>'+d.title+'</h2><p>Your personal profile &#183; saved '+p.since+'</p></div></div>';
+ h+='<div class="srow"><div class="st"><div class="stv">'+d.pop+'</div><div class="stl">population</div></div><div class="st"><div class="stv">'+d.diet+'</div><div class="stl">diet style</div></div><div class="st"><div class="stv">'+d.ex+'</div><div class="stl">exercise</div></div></div></div>';
+ h+='<div class="card"><div class="sec-title">My food blueprint</div><div style="font-size:11px;color:#2E7D32;font-weight:700;margin-bottom:4px;">&#10003; Eat freely</div><div>'+d.eat.map(x=>pill(x,'#E8F5E9')).join('')+'</div>';
+ h+='<div style="font-size:11px;color:#c62828;font-weight:700;margin:9px 0 4px;">&#10007; Avoid</div><div>'+d.avoid.map(x=>pill(x,'#FFEBEE')).join('')+'</div>';
+ h+='<div style="font-size:11px;color:#F9A825;font-weight:700;margin:9px 0 4px;">&#9888; Limit</div><div>'+d.warn.map(x=>pill(x,'#FFF8E1')).join('')+'</div></div>';
+ h+='<div class="card"><div class="sec-title">My health profile</div><div style="font-size:11px;color:#bbb;margin-bottom:5px;">Strengths</div><div>'+d.strengths.map(x=>pill(x,'#E0F2F1')).join('')+'</div><div style="font-size:11px;color:#bbb;margin:9px 0 5px;">Watch out for</div><div>'+d.watch.map(x=>pill(x,'#FBE9E7')).join('')+'</div></div>';
+ h+='<div class="card"><div class="sec-title">My workout plan</div>'+wkHTML(p.type)+'</div>';
+ h+='<button class="abtn" onclick="loadDash(cur);goTo(\'scr-dash\')">VIEW TODAY\u2019S MEAL PLAN</button>';
+ h+='<button class="abtn" onclick="goCoach()" style="background:#E0F2F1;color:#00695C;">ASK MY AI COACH</button>';
+ h+='<button class="bbtn" onclick="goTo(\'scr-select\')">Change my blood type</button>';
+ document.getElementById('profile-body').innerHTML=h;}
+
+/* ---- 2b. BUILT-IN COACH (instant answers when the API is unreachable) ---- */
+function localCoach(q){const d=DB[cur],w=wkOf(cur),t=' '+q.toLowerCase()+' ';
+ const hit=list=>list.find(f=>t.includes(f.toLowerCase().split(' ')[0]));
+ if(/workout|exercise|gym|train|fitness|cardio|running|yoga|weight lift/.test(t))
+  return 'For '+cur+' - '+w.name+': '+w.why+' Your best training: '+w.best.join('; ')+'. Your full weekly plan is on your My Type page. (Blood-type-inspired fitness based on the D\u2019Adamo model - check with your doctor before big changes.)';
+ if(/supplement|vitamin/.test(t))
+  return 'Common picks for type '+cur+' in the blood-type model: '+SUPP[cur.replace(/[+-]/g,'')]+'. Always confirm dosing with your doctor or pharmacist before starting anything new.';
+ if(/(7|seven).{0,4}day|meal plan|weekly plan|week of/.test(t)){
+  let out='Here is a '+cur+' template day - repeat it through the week, rotating in swaps from your Eat Freely list:<br>';
+  d.meals.forEach(m=>out+='&#8226; <b>'+m.t+':</b> '+m.n+' - '+m.d+'<br>');
+  return out+'Rotate proteins and greens like '+d.eat.slice(0,5).join(', ')+' so no two days feel the same.';}
+ if(/restaurant|eating out|order|menu|takeout|take out|fast food/.test(t))
+  return 'Eating out as '+cur+' ('+d.title+'): build your plate around '+d.eat.slice(0,4).join(', ')+'. Politely skip '+d.avoid.slice(0,3).join(', ')+'. Grilled protein plus steamed or roasted vegetables is almost always your safest order.';
+ const av=hit(d.avoid);if(av)return av+' is on the Avoid list for '+cur+' ('+d.title+'). In the blood-type model, its lectins clash with your type\u2019s digestion. Better swaps from your Eat Freely list: '+d.eat.slice(0,3).join(', ')+'.';
+ const wr=hit(d.warn);if(wr)return wr+' is a Limit food for '+cur+' - fine occasionally, just keep it out of the daily rotation.';
+ const ok=hit(d.eat);if(ok)return 'Good news - '+ok+' is on your Eat Freely list for '+cur+'. Enjoy it! It pairs well with '+d.eat.filter(x=>x!==ok).slice(0,2).join(' and ')+'.';
+ return 'As a '+cur+' ('+d.title+'): '+d.desc+' Eat freely: '+d.eat.slice(0,6).join(', ')+'. Avoid: '+d.avoid.slice(0,4).join(', ')+'. Ask me about meal plans, supplements, workouts, eating out, or any specific food!';}
+
+/* ---- AI call: proxy first, then direct (works in preview), then built-in coach ---- */
+async function askAI(sys,msgs){
+ const parse=d=>{const t=(d.content||[]).filter(c=>c.type==='text').map(c=>c.text).join('\n');if(!t)throw new Error('empty');return t;};
+ if(PROXY_URL){const r=await fetch(PROXY_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:800,system:sys,messages:msgs})});return parse(await r.json());}
+ const r=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:800,system:sys,messages:msgs})});return parse(await r.json());}
+
+/* ---- 3. SPEECH-TO-TEXT (tap the mic, speak, tap send) ---- */
+let _rec=null,_recOn=false;
+function stt(){const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+ if(!SR){alert('Voice input is not supported in this browser. Try Chrome (Android/desktop) or Safari (iPhone).');return;}
+ const mb=document.getElementById('chat-mic'),inp=document.getElementById('chat-in');
+ if(_recOn){_rec.stop();return;}
+ _rec=new SR();_rec.lang='en-US';_rec.interimResults=true;_rec.continuous=false;
+ _rec.onstart=()=>{_recOn=true;mb.classList.add('rec');inp.placeholder='Listening\u2026 tap mic to stop';};
+ _rec.onresult=e=>{let t='';for(const r of e.results)t+=r[0].transcript;inp.value=t;};
+ _rec.onend=()=>{_recOn=false;mb.classList.remove('rec');inp.placeholder='Ask your coach...';inp.focus();};
+ _rec.onerror=()=>{_recOn=false;mb.classList.remove('rec');inp.placeholder='Ask your coach...';};
+ _rec.start();}
+
+/* ---- Startup: restore saved profile, fill workout card, apply affiliate tag ---- */
+(function(){
+ const _ld=loadDash;loadDash=function(t){_ld(t);const el=document.getElementById('dash-workout');if(el)el.innerHTML=wkHTML(t);};
+ const p=profileGet();if(p&&DB[p.type]){cur=p.type;}
+ loadDash(cur);
+ if(AMAZON_AFFILIATE_TAG){document.querySelectorAll('a[href*="amazon."]').forEach(a=>{try{const u=new URL(a.href);u.searchParams.set('tag',AMAZON_AFFILIATE_TAG);a.href=u.toString();}catch(e){}});}
+})();
+
 </script>
 
 <script>
