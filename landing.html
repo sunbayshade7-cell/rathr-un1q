@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>R@THR UN1Q — Eat For Your Blood Type</title>
+<meta name="description" content="Discover what to eat, avoid, and limit based on your blood type. Personalized meal plans and an AI nutrition coach for A, B, AB, and O blood types.">
+<style>
+  :root{
+    --forest:#0a3d2e;
+    --forest-deep:#072b21;
+    --mint:#eaf6f1;
+    --mint-dim:#d7ece3;
+    --gold:#f2c037;
+    --gold-deep:#d9a521;
+    --blood:#c81e3a;
+    --ink:#122921;
+    --ink-soft:#4a6157;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html{scroll-behavior:smooth;}
+  body{
+    font-family:Georgia, 'Times New Roman', serif;
+    background:var(--forest);
+    color:var(--mint);
+    line-height:1.5;
+  }
+  .sans{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;}
+
+  a{color:inherit;}
+
+  /* ---------- HERO ---------- */
+  .hero{
+    padding:80px 24px 60px;
+    text-align:center;
+    background:
+      radial-gradient(ellipse at top, rgba(242,192,55,0.08), transparent 60%),
+      var(--forest);
+    position:relative;
+  }
+  .wordmark{
+    font-size:clamp(48px, 12vw, 92px);
+    font-weight:700;
+    letter-spacing:1px;
+    color:#dfe6e2;
+    text-shadow: 0 2px 0 rgba(0,0,0,0.25);
+  }
+  .wordmark .at{ color:var(--gold); font-style:italic; }
+  .wordmark .one{ color:var(--gold); }
+  .hero-rule{
+    width:120px; height:2px; margin:22px auto;
+    background:linear-gradient(90deg, transparent, var(--gold), transparent);
+  }
+  .hero-quote{
+    font-style:italic;
+    font-size:clamp(17px,3.4vw,22px);
+    color:var(--mint-dim);
+    max-width:560px;
+    margin:0 auto 40px;
+  }
+  .cta-gold{
+    display:inline-block;
+    font-family:Georgia,serif;
+    font-weight:700;
+    letter-spacing:2px;
+    text-transform:uppercase;
+    font-size:15px;
+    color:var(--forest-deep);
+    background:linear-gradient(180deg, var(--gold), var(--gold-deep));
+    padding:16px 40px;
+    border-radius:30px;
+    text-decoration:none;
+    box-shadow:0 8px 20px rgba(0,0,0,0.3);
+    transition:transform .15s ease;
+  }
+  .cta-gold:hover{ transform:translateY(-2px); }
+  .store-note{
+    margin-top:14px;
+    font-size:13px;
+    color:var(--mint-dim);
+    font-family:Georgia,serif;
+  }
+
+  /* ---------- INTRO ---------- */
+  .panel{
+    background:var(--mint);
+    color:var(--ink);
+  }
+  .intro{
+    max-width:640px;
+    margin:0 auto;
+    padding:64px 24px 40px;
+    text-align:center;
+  }
+  .intro h2{
+    font-size:clamp(26px,5vw,34px);
+    color:var(--forest);
+  }
+  .intro p{
+    font-family:Georgia,serif;
+    color:var(--ink-soft);
+    margin-top:14px;
+    font-size:17px;
+  }
+
+  /* ---------- DROP REVEAL ---------- */
+  .reveal-wrap{
+    max-width:760px;
+    margin:0 auto;
+    padding:20px 24px 70px;
+  }
+  .type-grid{
+    display:grid;
+    grid-template-columns:repeat(4, 1fr);
+    gap:12px;
+  }
+  @media (max-width:640px){
+    .type-grid{ grid-template-columns:repeat(2, 1fr); }
+  }
+  .type-card{
+    background:#fff;
+    border:1px solid #d7e6de;
+    border-radius:14px;
+    padding:18px 10px;
+    text-align:center;
+    cursor:pointer;
+    transition:border-color .15s ease, transform .15s ease;
+    font-family:Georgia,serif;
+  }
+  .type-card:hover{ transform:translateY(-3px); border-color:var(--gold); }
+  .type-card.active{
+    border-color:var(--blood);
+    background:#fff5f6;
+  }
+  .type-card .t{
+    font-size:26px; font-weight:700; color:var(--forest);
+  }
+  .type-card .n{
+    font-size:12px; letter-spacing:.5px; text-transform:uppercase;
+    color:var(--ink-soft); margin-top:2px;
+  }
+
+  .detail-box{
+    margin-top:22px;
+    background:#fff;
+    border-radius:16px;
+    padding:28px 26px;
+    border:1px solid #d7e6de;
+  }
+  .detail-box h3{
+    color:var(--forest);
+    font-size:22px;
+    display:flex;
+    align-items:center;
+    gap:10px;
+  }
+  .drop-mini{
+    width:14px; height:14px;
+    display:inline-block;
+    vertical-align:-2px;
+  }
+  .detail-box .sub{
+    color:var(--ink-soft); font-size:14px; margin-top:2px; margin-bottom:16px;
+  }
+  .cols{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:20px;
+    margin-top:10px;
+  }
+  @media (max-width:520px){ .cols{ grid-template-columns:1fr; } }
+  .col-label{
+    font-size:12px; letter-spacing:1px; text-transform:uppercase;
+    font-weight:700; margin-bottom:8px;
+    font-family:-apple-system,sans-serif;
+  }
+  .col-label.eat{ color:#1a7a4c; }
+  .col-label.avoid{ color:var(--blood); }
+  .pill{
+    display:inline-block;
+    font-family:-apple-system,sans-serif;
+    font-size:13px;
+    padding:5px 12px;
+    border-radius:20px;
+    margin:0 6px 6px 0;
+  }
+  .pill.eat{ background:#e7f6ee; color:#1a7a4c; }
+  .pill.avoid{ background:#fbe9ec; color:var(--blood); }
+
+  /* ---------- HOW IT WORKS ---------- */
+  .how{
+    background:var(--forest-deep);
+    padding:64px 24px;
+  }
+  .how-inner{ max-width:860px; margin:0 auto; text-align:center; }
+  .how h2{ font-size:clamp(24px,4.6vw,30px); color:var(--mint); }
+  .how p.lead{ color:var(--mint-dim); max-width:520px; margin:12px auto 40px; }
+  .steps{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:20px;
+    text-align:left;
+  }
+  @media (max-width:700px){ .steps{ grid-template-columns:1fr; } }
+  .step{
+    background:rgba(255,255,255,0.04);
+    border:1px solid rgba(242,192,55,0.18);
+    border-radius:14px;
+    padding:22px;
+  }
+  .step .num{
+    font-family:Georgia,serif; color:var(--gold);
+    font-size:14px; letter-spacing:1px;
+  }
+  .step h4{ margin-top:8px; color:var(--mint); font-size:18px; }
+  .step p{ margin-top:6px; font-size:14px; color:var(--mint-dim); font-family:-apple-system,sans-serif; }
+
+  /* ---------- FINAL CTA ---------- */
+  .final{
+    text-align:center;
+    padding:70px 24px 60px;
+    background:var(--forest);
+  }
+  .final h2{ font-size:clamp(24px,5vw,32px); color:var(--mint); }
+  .final p{ color:var(--mint-dim); margin:12px 0 32px; }
+
+  footer{
+    text-align:center;
+    padding:26px 24px 40px;
+    font-family:-apple-system,sans-serif;
+    font-size:12px;
+    color:var(--mint-dim);
+    background:var(--forest);
+  }
+  footer a{ text-decoration:underline; }
+</style>
+</head>
+<body>
+
+<section class="hero">
+  <div class="wordmark">R<span class="at">@</span>THR UN<span class="one">1</span>Q</div>
+  <div class="hero-rule"></div>
+  <p class="hero-quote">"How can you know what to feed yourself if you don't know your blood type?"</p>
+  <div style="display:flex; flex-direction:column; gap:12px; max-width:320px; margin:0 auto;">
+    <a class="cta-gold" href="https://apps.microsoft.com/detail/9MZZK6RNCLM4" target="_blank" rel="noopener">Get it on Windows — $1.99</a>
+    <a class="cta-gold" href="get-app.html" style="background:linear-gradient(180deg, #eaf6f1, #d7ece3); color:#0a3d2e;">Use it on mobile — $1.99</a>
+  </div>
+  <p class="store-note">Works on PC, phone, or in your browser</p>
+</section>
+
+<section class="panel">
+  <div class="intro">
+    <h2>Your blood type is your blueprint.</h2>
+    <p>Most diets are built for the average person — which means they're built for no one in particular. Your blood type shapes how your body digests protein, processes fat, and responds to different food groups. R@THR UN1Q turns that into a daily meal plan built around your biology, not a trend.</p>
+  </div>
+
+  <div class="reveal-wrap">
+    <div class="type-grid" id="typeGrid">
+      <div class="type-card" data-type="O"><div class="t">O</div><div class="n">The Hunter</div></div>
+      <div class="type-card" data-type="A"><div class="t">A</div><div class="n">The Cultivator</div></div>
+      <div class="type-card" data-type="B"><div class="t">B</div><div class="n">The Nomad</div></div>
+      <div class="type-card" data-type="AB"><div class="t">AB</div><div class="n">The Enigma</div></div>
+    </div>
+
+    <div class="detail-box" id="detailBox">
+      <h3><svg class="drop-mini" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 2C12 2 5 11 5 15.5C5 19.09 8.134 22 12 22C15.866 22 19 19.09 19 15.5C19 11 12 2 12 2Z" fill="#c81e3a"/></svg> <span id="detailTitle">Tap a type to see its food guide</span></h3>
+      <p class="sub" id="detailSub">Choose O, A, B, or AB above</p>
+      <div class="cols" id="detailCols" style="display:none;">
+        <div>
+          <div class="col-label eat">Eat freely</div>
+          <div id="eatList"></div>
+        </div>
+        <div>
+          <div class="col-label avoid">Limit or avoid</div>
+          <div id="avoidList"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="how">
+  <div class="how-inner">
+    <h2>Three ways R@THR UN1Q helps you eat right</h2>
+    <p class="lead">No guesswork. No generic macros. Just a plan built around your type.</p>
+    <div class="steps">
+      <div class="step">
+        <div class="num">01</div>
+        <h4>Find your type</h4>
+        <p>Already know it? Enter it. Don't know it? We'll point you to a home test kit, blood donation, or lab test.</p>
+      </div>
+      <div class="step">
+        <div class="num">02</div>
+        <h4>Get your blueprint</h4>
+        <p>See your eat-freely, limit, and avoid lists — plus a daily meal plan built around your biology.</p>
+      </div>
+      <div class="step">
+        <div class="num">03</div>
+        <h4>Ask your AI coach</h4>
+        <p>Wondering if you can eat something? Ask. Get an instant, type-specific answer any time.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="final">
+  <h2>Stop eating for trends.<br>Start eating for your biology.</h2>
+  <p>Just $1.99. Find your type in under a minute.</p>
+  <div style="display:flex; flex-direction:column; gap:12px; max-width:320px; margin:0 auto;">
+    <a class="cta-gold" href="https://apps.microsoft.com/detail/9MZZK6RNCLM4" target="_blank" rel="noopener">Get it on Windows</a>
+    <a class="cta-gold" href="get-app.html" style="background:linear-gradient(180deg, #eaf6f1, #d7ece3); color:#0a3d2e;">Use it on mobile</a>
+  </div>
+</section>
+
+<footer>
+  © 2026 SunBayShades, LLC · <a href="privacy.html">Privacy Policy</a>
+</footer>
+
+<script>
+  const data = {
+    O: {
+      title: "O — The Hunter",
+      sub: "Original blood type. Built for meat, intense exercise, grain-light.",
+      eat: ["Beef","Lamb","Venison","Cod","Mackerel","Kale","Spinach"],
+      avoid: ["Wheat","Corn","Dairy","Lentils","Kidney beans","Cauliflower"]
+    },
+    A: {
+      title: "A — The Cultivator",
+      sub: "Adapted to agriculture. Thrives on plant-based, grain-friendly meals.",
+      eat: ["Tofu","Lentils","Salmon","Broccoli","Spinach","Oats"],
+      avoid: ["Red meat","Dairy","Kidney beans","Wheat (in excess)"]
+    },
+    B: {
+      title: "B — The Nomad",
+      sub: "Adaptable but reactive. Balanced omnivore with select restrictions.",
+      eat: ["Lamb","Venison","Salmon","Leafy greens","Eggs","Low-fat dairy"],
+      avoid: ["Chicken","Corn","Wheat","Peanuts","Tomatoes"]
+    },
+    AB: {
+      title: "AB — The Enigma",
+      sub: "Rarest type. Mixed rules from both A and B — moderation is key.",
+      eat: ["Tofu","Seafood","Dairy (moderate)","Green vegetables"],
+      avoid: ["Red meat","Chicken","Caffeine (in excess)","Alcohol"]
+    }
+  };
+
+  const cards = document.querySelectorAll('.type-card');
+  const title = document.getElementById('detailTitle');
+  const sub = document.getElementById('detailSub');
+  const cols = document.getElementById('detailCols');
+  const eatList = document.getElementById('eatList');
+  const avoidList = document.getElementById('avoidList');
+
+  cards.forEach(card => {
+    card.addEventListener('click', () => {
+      cards.forEach(c => c.classList.remove('active'));
+      card.classList.add('active');
+      const d = data[card.dataset.type];
+      title.textContent = d.title;
+      sub.textContent = d.sub;
+      eatList.innerHTML = d.eat.map(f => `<span class="pill eat">${f}</span>`).join('');
+      avoidList.innerHTML = d.avoid.map(f => `<span class="pill avoid">${f}</span>`).join('');
+      cols.style.display = 'grid';
+    });
+  });
+</script>
+
+</body>
+</html>
